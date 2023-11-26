@@ -11,7 +11,8 @@ COPY ./messenger /messenger
 ENV EXEC_PATH="/messenger/copads"
 RUN mkdir /keys
 ENV KEY_DIR="/keys"
-ENV INDEX_PATH="index.html"
+COPY index.html /index.html
+ENV INDEX_PATH="/index.html"
 COPY private.key /keys
 COPY public.key /keys
 CMD ["./webapp"]

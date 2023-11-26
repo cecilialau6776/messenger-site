@@ -1,5 +1,5 @@
 use actix_files::NamedFile;
-use actix_web::{get, post, web, App, HttpRequest, HttpResponse, HttpServer, Responder, Result};
+use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder, Result};
 use dotenvy::dotenv;
 use lazy_static::lazy_static;
 use serde::Deserialize;
