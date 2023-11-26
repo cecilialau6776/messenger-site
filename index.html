@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+<title>Test COPADS project</title>
+</head>
+<body>
+<h1>Send yourself a message:</h1>
+<form method="post" id="sendMessageForm">
+  <label for="email">Email to send a message to:</label><br>
+  <input type="email" name="email" id="email" placeholder="jsb@cs.rit.edu" required/><br>
+  <label for="content">Message:</label><br>
+  <input type="text" name="content" id="content" placeholder="Happy Thanksgiving!" required/><br>
+  <input type="submit" value="Send" />
+</form>
+<br>
+<div id="sendMessageResponse">
+</div>
+<hr>
+<h1>Send cecilialau6776@gmail.com a message:</h1>
+<p>Get the key at cecilialau6776@gmail.com, send a message to that email, and then click the button to see if it sent correctly!</p>
+<input type="button" value="Get Message" id="getMessage" />
+<p id="getMessageResponse">
+</p>
+<br>
+<hr>
+<script>
+  const form = document.getElementById("sendMessageForm");
+  const formResponse = document.getElementById("sendMessageResponse");
+  const getResponse = document.getElementById("getMessageResponse");
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    var http = new XMLHttpRequest();
+
+    formResponse.innerHTML = `<p>Please wait...</p>`;
+    http.onreadystatechange = () => {
+        if (http.readyState === 4) {
+          if (http.status === 200) {
+            formResponse.innerHTML = `<p>${http.responseText}</p>`;
+          } else {
+            formResponse.innerHTML = `<strong>Error:</strong><p>${http.responseText}</p>`;
+          }
+        }
+    }
+
+    http.open("POST", "/sendMessage", true)
+    http.setRequestHeader("Content-type", "application/json");
+    const jsonData = { "email": data.get("email"), "content": data.get("content") };
+    http.send(JSON.stringify(jsonData));
+  });
+ const getMessageButton = document.getElementById("getMessage");
+ getMessageButton.addEventListener("click", (event) => {
+   event.preventDefault();
+   
+    var http = new XMLHttpRequest();
+    getResponse.innerHTML = `<p>Please wait...</p>`;
+    http.onreadystatechange = () => {
+        if (http.readyState === 4) {
+          if (http.status === 200) {
+            getResponse.textContent = http.responseText;
+          } else {
+            getResponse.innerHTML = `<strong>Error:</strong><p>${http.responseText}</p>`;
+          }
+        }
+    }
+    http.open("GET", "/getMessage", true)
+    http.send();
+ });
+</script>
+<br>
+<address>
+<a>Ping me on discord (@pixelgamercat)</a> or email me at <a href="mailto:cecilialau6776@gmail.com">cecilialau6776@gmail.com</a> if something's really wrong
+</address>
+</body>
+</html>
