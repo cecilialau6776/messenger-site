@@ -9,10 +9,11 @@ WORKDIR /app
 COPY --from=build /app/target/release/webapp ./
 COPY ./messenger /messenger
 ENV EXEC_PATH="/messenger/copads"
-RUN groupadd chom && usermod -aG chom root && mkdir /keys && chown root:chom /keys && chmod g+rwx /keys
-ENV KEY_DIR="/keys"
+# RUN groupadd chom && usermod -aG chom root && mkdir /keys && chown root:chom /keys && chmod g+rwx /keys
 COPY index.html /index.html
 ENV INDEX_PATH="/index.html"
-COPY private.key /keys
-COPY public.key /keys
+RUN mkdir /tmp/keys
+COPY private.key /tmp/keys
+COPY public.key /tmp/keys
+ENV KEY_DIR="/tmp/keys"
 CMD ["./webapp"]
