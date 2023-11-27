@@ -41,28 +41,22 @@ async fn send_message(info: web::Json<Message>) -> impl Responder {
     .output()
   {
     Ok(output) => {
-      println!("stdout: {}", std::str::from_utf8(&output.stdout).unwrap());
-      println!("stderr: {}", std::str::from_utf8(&output.stderr).unwrap());
-      println!("exit code: {}", output.status.code().unwrap());
+      // println!("stdout: {}", std::str::from_utf8(&output.stdout).unwrap());
+      // println!("stderr: {}", std::str::from_utf8(&output.stderr).unwrap());
+      // println!("exit code: {}", output.status.code().unwrap());
       if let Some(code) = output.status.code() {
         if code == 1 {
           return HttpResponse::NotFound().body(format!("No key found for {}", email));
-        }
-      } else {
-        println!("got key?");
-        let paths = std::fs::read_dir(&*KEY_DIR).unwrap();
-        for path in paths {
-          println!("{}", path.unwrap().path().display());
         }
       }
     }
     Err(e) => return HttpResponse::InternalServerError().body(format!("Other Error: {}", e)),
   };
   println!("key aquired for {}", email);
-  let paths = std::fs::read_dir(&*KEY_DIR).unwrap();
-  for path in paths {
-    println!("{}", path.unwrap().path().display());
-  }
+  // let paths = std::fs::read_dir(&*KEY_DIR).unwrap();
+  // for path in paths {
+  //   println!("{}", path.unwrap().path().display());
+  // }
   match Command::new(&*EXEC_PATH)
     .current_dir(&*KEY_DIR)
     // Command::new("/run/linux-x64/publish/copads")
