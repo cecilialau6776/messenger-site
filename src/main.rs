@@ -50,6 +50,9 @@ async fn send_message(info: web::Json<Message>) -> impl Responder {
     }
     Err(e) => return HttpResponse::InternalServerError().body(format!("Other Error: {}", e)),
   };
+  println!("key aquired for {}", email);
+  let paths = std::fs::read_dir(&*KEY_DIR).unwrap();
+  println!("{:?}", paths);
   match Command::new(&*EXEC_PATH)
     .current_dir(&*KEY_DIR)
     // Command::new("/run/linux-x64/publish/copads")
