@@ -41,9 +41,9 @@ async fn send_message(info: web::Json<Message>) -> impl Responder {
     .output()
   {
     Ok(output) => {
-      // println!("stdout: {}", std::str::from_utf8(&output.stdout).unwrap());
-      // println!("stderr: {}", std::str::from_utf8(&output.stderr).unwrap());
-      // println!("exit code: {}", output.status.code().unwrap());
+      println!("stdout: {}", std::str::from_utf8(&output.stdout).unwrap());
+      println!("stderr: {}", std::str::from_utf8(&output.stderr).unwrap());
+      println!("exit code: {}", output.status.code().unwrap());
       if let Some(code) = output.status.code() {
         if code == 1 {
           return HttpResponse::NotFound().body(format!("No key found for {}", email));
