@@ -36,7 +36,6 @@ async fn send_message(info: web::Json<Message>) -> impl Responder {
 
   match Command::new(&*EXEC_PATH)
     .current_dir(&*KEY_DIR)
-    // Command::new("/run/linux-x64/publish/copads")
     .arg("getKey")
     .arg(email)
     .output()
@@ -45,6 +44,12 @@ async fn send_message(info: web::Json<Message>) -> impl Responder {
       if let Some(code) = output.status.code() {
         if code == 1 {
           return HttpResponse::NotFound().body(format!("No key found for {}", email));
+        } else {
+          println!("got key?");
+          let paths = std::fs::read_dir(&*KEY_DIR).unwrap();
+          for path in paths {
+            println!("{}", path.unwrap().path().display());
+          }
         }
       }
     }
