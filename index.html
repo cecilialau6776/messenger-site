@@ -187,8 +187,8 @@
        try {
          privkey = JSON.parse(content);
          const output = decodeb64(privkey.key, 'd');
-         if (!('email' in privkey)) {
-           privkeyResponse.innerHTML = "<p><strong>Warning! Missing email</strong></p>" + output;
+         if (!('emails' in privkey)) {
+           privkeyResponse.innerHTML = "<p><strong>Warning! Missing emails field</strong></p>" + output;
          } else if (!Array.isArray(privkey.email)) {
            privkeyResponse.innerHTML = "<p><strong>Warning! Email field should be an array.</strong></p>" + output;
          }
