@@ -1,75 +1,243 @@
 <!DOCTYPE html>
 <html>
   <head>
-<title>Test COPADS project</title>
-</head>
-<body>
-<h1>Send yourself a message:</h1>
-<form method="post" id="sendMessageForm">
-  <label for="email">Email to send a message to:</label><br>
-  <input type="email" name="email" id="email" placeholder="jsb@cs.rit.edu" required/><br>
-  <label for="content">Message:</label><br>
-  <input type="text" name="content" id="content" placeholder="Happy Thanksgiving!" required/><br>
-  <input type="submit" value="Send" />
-</form>
-<br>
-<div id="sendMessageResponse">
-</div>
-<hr>
-<h1>Send cecilialau6776@gmail.com a message:</h1>
-<p>Get the key at cecilialau6776@gmail.com, send a message to that email, and then click the button to see if it sent correctly!</p>
-<input type="button" value="Get Message" id="getMessage" />
-<p id="getMessageResponse">
-</p>
-<br>
-<hr>
-<script>
-  const form = document.getElementById("sendMessageForm");
-  const formResponse = document.getElementById("sendMessageResponse");
-  const getResponse = document.getElementById("getMessageResponse");
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    var http = new XMLHttpRequest();
+    <title>Test COPADS project</title>
+    <style>
+     .row {
+       display: flex;
+     }
+     .column {
+       flex: 50%;
+       padding: 1em;
+     }
+     .left {
+       border-right: solid black .1em;
+     }
+     textarea {
+       width: 100%;
+     }
+     h1 {
+       padding-left: 1em;
+     }
+     p {
+       overflow-wrap: anywhere;
+     }
+    </style>
+  </head>
+  <body>
+    <h1>Messenger</h1>
+    <section id="messenger" class="row" >
+        <div class="column left" >
+            <h3>Send yourself a message:</h1>
+            <form method="post" id="sendMessageForm">
+            <label for="email">Email to send a message to:</label><br>
+            <input type="email" name="email" id="email" placeholder="jsb@cs.rit.edu" required="" />
+            <br>
+            <label for="content">Message:</label>
+            <br>
+            <input type="text" name="content" id="content" placeholder="Happy Thanksgiving!" required/>
+            <br>
+            <input type="submit" value="Send" />
+            </form>
+            <br>
+            <div id="sendMessageResponse">
+            </div>
+        </div>
+        <div class="column" >
+            <h3>Send <span class="email">cecilialau6776@gmail.com a message:</h3>
+            <p>Get the key at cecilialau6776@gmail.com, send a message to that email, and then click the button to see if it sent correctly!
+            </p>
+            <input type="button" value="Get Message" id="getMessage" />
+            <p id="getMessageResponse">
+            </p>
+            <br>
+        </div>
+    </section>
+    <hr>
 
-    formResponse.innerHTML = `<p>Please wait...</p>`;
-    http.onreadystatechange = () => {
-        if (http.readyState === 4) {
-          if (http.status === 200) {
-            formResponse.innerHTML = `<p>${http.responseText}</p>`;
-          } else {
-            formResponse.innerHTML = `<strong>Error:</strong><p>${http.responseText}</p>`;
+    <h1>Key Decoder</h1>
+    <section id="key" class="row" >
+      <div class="column left" >
+        <h3>Public Key</h3>
+        <label for="pub" >Paste your public key below. It can be either the entire JSON string or just the base64 encoded key.</label>
+        <textarea id="pub" rows="7"></textarea>
+        <div id="pubResponse"></div>
+      </div>
+      <div class="column" >
+        <h3>Private Key</h3>
+        <label for="priv" >Paste your private key here. It can be either the entire JSON string or just the base64 encoded key.</label>
+        <textarea id="priv" rows="7"></textarea>
+        <div id="privResponse"></div>
+      </div>
+    </section>
+
+    </div>
+    <hr>
+    <script>
+      const form = document.getElementById("sendMessageForm");
+      const formResponse = document.getElementById("sendMessageResponse");
+      const getResponse = document.getElementById("getMessageResponse");
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        var http = new XMLHttpRequest();
+
+        formResponse.innerHTML = `<p>Please wait...</p>`;
+        http.onreadystatechange = () => {
+          if (http.readyState === 4) {
+            if (http.status === 200) {
+              formResponse.innerHTML = `<p>${http.responseText}</p>`;
+            } else {
+              formResponse.innerHTML = `<strong>Error:</strong><p>${http.responseText}</p>`;
+            }
           }
         }
-    }
 
-    http.open("POST", "/sendMessage", true)
-    http.setRequestHeader("Content-type", "application/json");
-    const jsonData = { "email": data.get("email"), "content": data.get("content") };
-    http.send(JSON.stringify(jsonData));
-  });
- const getMessageButton = document.getElementById("getMessage");
- getMessageButton.addEventListener("click", (event) => {
-   event.preventDefault();
-   
-    var http = new XMLHttpRequest();
-    getResponse.innerHTML = `<p>Please wait...</p>`;
-    http.onreadystatechange = () => {
-        if (http.readyState === 4) {
-          if (http.status === 200) {
-            getResponse.textContent = http.responseText;
-          } else {
-            getResponse.innerHTML = `<strong>Error:</strong><p>${http.responseText}</p>`;
+        http.open("POST", "/sendMessage", true)
+        http.setRequestHeader("Content-type", "application/json");
+        const jsonData = { "email": data.get("email"), "content": data.get("content") };
+        http.send(JSON.stringify(jsonData));
+      });
+      const getMessageButton = document.getElementById("getMessage");
+      getMessageButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        
+        var http = new XMLHttpRequest();
+        getResponse.innerHTML = `<p>Please wait...</p>`;
+        http.onreadystatechange = () => {
+          if (http.readyState === 4) {
+            if (http.status === 200) {
+              getResponse.textContent = http.responseText;
+            } else {
+              getResponse.innerHTML = `<strong>Error:</strong><p>${http.responseText}</p>`;
+            }
           }
         }
-    }
-    http.open("GET", "/getMessage", true)
-    http.send();
- });
-</script>
-<br>
-<address>
-<a>Ping me on discord (@pixelgamercat)</a> or email me at <a href="mailto:cecilialau6776@gmail.com">cecilialau6776@gmail.com</a> if something's really wrong
-</address>
-</body>
+        http.open("GET", "/getMessage", true)
+        http.send();
+      });
+
+     const pubkeyTextarea = document.getElementById("pub");
+     const pubkeyResponse = document.getElementById("pubResponse");
+     function bytesToInt(bArray, index) {
+       return bArray[index] * 256 ** 3 + bArray[index + 1] * 256 ** 2 + bArray[index + 2] * 256 + bArray[index + 3];
+     }
+
+     function bytesToBigInt(bArray, index, len) {
+       var output = 0n;
+       for (var i = 0; i < len; i++) {
+         output += BigInt(bArray[index + i]) * BigInt(256) ** BigInt(i);
+       }
+       return output;
+     }
+
+     function toDisplayHtml(data, displayChar) {
+       if (data[0] === null) {
+         return `No length for ${displayChar}`;
+       }
+       var output = "";
+       output += `<p>Length of ${displayChar}: ${data[0]}</p>`;
+
+       if (data[1] === null) {
+         output += `<p>Error reading ${displayChar}, cannot continue.</p>`;
+         return;
+       } else {
+         output += `<p>${displayChar}: ${data[1]}</p>`;
+       }
+
+       if (data[2] === null) {
+         output += "<p>Error reading length of n, cannot continue.</p>";
+         return;
+       } else {
+         output += `<p>Length of n: ${data[2]}</p>`;
+       }
+
+       if (data[3] === null) {
+         output += "<p>Error reading n, cannot continue.</p>";
+         return;
+       } else {
+         output += `<p>n: ${data[3]}</p>`;
+       }
+       return output;
+     }
+
+     function decodeb64(inp, displayChar) {
+       const cleaned = inp.trim().replaceAll("\\u002B", "+");
+       const binaryString = atob(cleaned)
+       var bytes = new Uint8Array(binaryString.length);
+       for (var i = 0; i < binaryString.length; i++) {
+           bytes[i] = binaryString.charCodeAt(i);
+       }
+       const aLen = bytesToInt(bytes, 0);
+       const a = bytesToBigInt(bytes, 4, aLen);
+       const bLen = bytesToInt(bytes, 4 + aLen);
+       const b = bytesToBigInt(bytes, 4 + aLen + 4, bLen);
+       return toDisplayHtml([aLen, a, bLen, b], displayChar);
+     }
+
+     const privkeyTextarea = document.getElementById("priv");
+     const privkeyResponse = document.getElementById("privResponse");
+     privkeyTextarea.addEventListener("input", (e) => {
+       // try json first
+       const content = e.target.value;
+       if (content.trim() === "") {
+         privkeyResponse.innerHTML = "";
+         return;
+       }
+       try {
+         privkey = JSON.parse(content);
+         const output = decodeb64(privkey.key, 'd');
+         if (!('email' in privkey)) {
+           privkeyResponse.innerHTML = "<p><strong>Warning! Missing email</strong></p>" + output;
+         } else if (!Array.isArray(privkey.email)) {
+           privkeyResponse.innerHTML = "<p><strong>Warning! Email field should be an array.</strong></p>" + output;
+         }
+       } catch {
+         // try base64
+         try {
+
+         privkeyResponse.innerHTML = decodeb64(content, 'd');
+
+         } catch (error) {
+           console.error(error);
+           privkeyResponse.textContent = "Invalid input";
+         }
+       }
+     });
+
+     pubkeyTextarea.addEventListener("input", (e) => {
+       // try json first
+       const content = e.target.value;
+       if (content.trim() === "") {
+         pubkeyResponse.innerHTML = "";
+         return;
+       }
+       try {
+         pubkey = JSON.parse(content);
+         const output = decodeb64(pubkey.key, 'e');
+         if (!('email' in pubkey)) {
+           pubkeyResponse.innerHTML = "<p><strong>Warning! Missing email</strong></p>" + output;
+         } else {
+           pubkeyResponse.innerHTML = output;
+         }
+       } catch {
+         // try base64
+         try {
+
+         pubkeyResponse.innerHTML = decodeb64(content, 'e');
+
+         } catch (error) {
+           console.error(error);
+           pubkeyResponse.textContent = "Invalid input";
+         }
+       }
+     });
+      </script>
+    <br>
+    <address>
+      <a>Ping me on discord (@pixelgamercat)</a> or email me at <a href="mailto:cecilialau6776@gmail.com">cecilialau6776@gmail.com</a> if something's really wrong
+    </address>
+    <br>
+    <a href="https://github.com/cecilialau6776/messenger-site/">Source code on GitHub</a>
+  </body>
 </html>
